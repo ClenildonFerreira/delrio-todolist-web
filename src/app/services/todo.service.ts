@@ -9,7 +9,7 @@ import { TodoDTO, CreateTodoDTO } from '../models/todo.interface';
 export class TodoService {
   private readonly apiUrl = 'http://localhost:8080/todos';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllTodos(): Observable<TodoDTO[]> {
     return this.http.get<TodoDTO[]>(this.apiUrl);

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TodoService } from '../../services/todo.service';
-import { CreateTodoDTO } from '../../models/todo.interface';
+import { TodoService } from 'src/app/services/todo.service';
+import { CreateTodoDTO } from 'src/app/models/todo.interface';
 
 @Component({
   selector: 'app-todo-form',
@@ -155,11 +155,10 @@ export class TodoFormComponent implements OnInit {
     private fb: FormBuilder,
     private todoService: TodoService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeForm();
-    // TODO: Implementar lógica para modo edição
   }
 
   private initializeForm(): void {
@@ -174,7 +173,7 @@ export class TodoFormComponent implements OnInit {
   onSubmit(): void {
     if (this.todoForm.valid) {
       const todoData: CreateTodoDTO = this.todoForm.value;
-      
+
       const operation = this.isEditMode && this.todoId
         ? this.todoService.updateTodo(this.todoId, todoData)
         : this.todoService.createTodo(todoData);

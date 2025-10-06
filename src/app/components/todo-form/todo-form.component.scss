@@ -28,20 +28,22 @@ textarea,
 select {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 70%, transparent);
   border-radius: 4px;
   font-size: 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: var(--mat-sys-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--mat-sys-primary) 18%, transparent);
 }
 
 .error {
-  color: #dc3545;
+  color: var(--mat-sys-error);
   font-size: 12px;
   margin-top: 5px;
 }
@@ -58,23 +60,25 @@ button {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  transition: transform 0.02s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .btn-primary {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
 }
 
 .btn-primary:disabled {
-  background-color: #6c757d;
+  background-color: color-mix(in srgb, var(--mat-sys-surface-variant) 60%, transparent);
   cursor: not-allowed;
 }
 
 .btn-secondary {
-  background-color: #6c757d;
-  color: white;
+  background-color: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
 }
 
 button:hover:not(:disabled) {
-  opacity: 0.9;
+  filter: brightness(1.02);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }

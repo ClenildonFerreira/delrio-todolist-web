@@ -34,9 +34,11 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 export class TodoListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['title', 'description', 'status', 'priority', 'createdAt', 'actions'];
   dataSource = new MatTableDataSource<TodoDTO>();
-  todos$!: PagedResponse<TodoDTO>;
   isLoading = false;
   error: string | null = null;
+  pageIndex = 0;
+  pageSize = 10;
+  totalElements = 0;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -65,6 +67,9 @@ export class TodoListComponent implements OnInit, AfterViewInit {
     this.todoService.listTodos(page, size).subscribe({
       next: (response: PagedResponse<TodoDTO>) => {
         this.dataSource.data = response.content;
+        this.pageIndex = response.page ?? page;
+        this.pageSize = response.size ?? size;
+        this.totalElements = response.totalElements ?? this.totalElements;
         this.isLoading = false;
       },
       error: (error) => {
@@ -119,7 +124,6 @@ export class TodoListComponent implements OnInit, AfterViewInit {
       if (result) {
         this.todoService.deleteTodo(id).subscribe({
           next: () => {
-            // Otimistic update
             this.dataSource.data = this.dataSource.data.filter(todo => todo.id !== id);
             this.snackBar.open('Tarefa excluída com sucesso!', 'Fechar', {
               duration: 3000

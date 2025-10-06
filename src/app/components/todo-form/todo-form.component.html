@@ -1,20 +1,32 @@
 <div class="form-container">
   <h2>{{ isEditMode ? 'Editar Tarefa' : 'Nova Tarefa' }}</h2>
   
-  <form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="todoForm" (ngSubmit)="onSubmit()" novalidate>
     <div class="form-group">
-      <label for="title">Título *</label>
+      <label for="title">Título <span aria-hidden="true">*</span></label>
       <input 
         type="text" 
         id="title" 
         formControlName="title" 
         placeholder="Digite o título da tarefa"
+        required
+        minlength="3"
+        maxlength="120"
+        autocomplete="off"
+        spellcheck="true"
+        autofocus
+        [attr.aria-invalid]="todoForm.get('title')?.invalid && todoForm.get('title')?.touched"
+        [attr.aria-describedby]="todoForm.get('title')?.invalid && todoForm.get('title')?.touched ? 'title-error' : null"
       />
       @if (todoForm.get('title')?.invalid && todoForm.get('title')?.touched) {
-        <div class="error">
-          Título é obrigatório
+        <div class="error" id="title-error" role="alert">
+          @if (todoForm.get('title')?.errors?.['required']) { Título é obrigatório }
+          @if (todoForm.get('title')?.errors?.['minlength']) { Informe ao menos 3 caracteres }
         </div>
       }
+      <div class="hint" aria-hidden="true">
+        {{ (todoForm.get('title')?.value?.length || 0) }} / 120
+      </div>
     </div>
 
     <div class="form-group">
@@ -24,33 +36,39 @@
         formControlName="description" 
         placeholder="Digite a descrição da tarefa"
         rows="3"
+        maxlength="500"
+        [attr.aria-describedby]="'description-hint'"
       ></textarea>
+      <div class="hint" id="description-hint" aria-hidden="true">
+        Opcional. Máx. 500 caracteres.
+      </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
         <label for="priority">Prioridade</label>
-        <select id="priority" formControlName="priority">
-          <option value="0">Alta</option>
-          <option value="1">Média</option>
-          <option value="2">Baixa</option>
+        <select id="priority" formControlName="priority" aria-label="Prioridade">
+          <option [value]="1">Alta</option>
+          <option [value]="2">Média</option>
+          <option [value]="3">Baixa</option>
         </select>
       </div>
 
       <div class="form-group">
         <label for="status">Status</label>
-        <select id="status" formControlName="status">
-          <option [value]="false">Pendente</option>
-          <option [value]="true">Concluído</option>
+        <select id="status" formControlName="status" aria-label="Status">
+          <option value="ABERTA">Aberta</option>
+          <option value="EM_ANDAMENTO">Em andamento</option>
+          <option value="CONCLUIDA">Concluída</option>
         </select>
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit" [disabled]="todoForm.invalid" class="btn-primary">
+      <button type="submit" [disabled]="todoForm.invalid" class="btn-primary" aria-label="{{ isEditMode ? 'Atualizar' : 'Criar' }} tarefa">
         {{ isEditMode ? 'Atualizar' : 'Criar' }}
       </button>
-      <button type="button" (click)="onCancel()" class="btn-secondary">
+      <button type="button" (click)="onCancel()" class="btn-secondary" aria-label="Cancelar e voltar">
         Cancelar
       </button>
     </div>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TodoService } from '../../services/todo.service';
-import { TodoDTO } from '../../models/todo.interface';
+import { TodoDTO, StatusTarefa } from '../../models/todo.interface';
 @Component({
   selector: 'app-todo-form',
   templateUrl: './todo-form.component.html',
@@ -31,7 +31,7 @@ export class TodoFormComponent implements OnInit {
     this.todoForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
-      status: [false],
+      status: ['ABERTA' as StatusTarefa],
       priority: [1]
     });
   }

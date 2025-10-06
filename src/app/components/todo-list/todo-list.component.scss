@@ -1,5 +1,7 @@
 .todo-container {
   padding: 20px;
+  max-width: 1180px;
+  margin: 0 auto;
 }
 
 .header {
@@ -9,8 +11,31 @@
   margin-bottom: 20px;
 }
 
+.header h2 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
 .table-container {
   overflow-x: auto;
+  background: var(--mat-sys-surface-container-low);
+  border: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 55%, transparent);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+table {
+  width: 100%;
+}
+
+tr.mat-mdc-row:hover {
+  background: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+}
+
+/* Zebra rows for readability */
+.mat-mdc-table .mdc-data-table__content tr:nth-child(odd) td {
+  background: color-mix(in srgb, var(--mat-sys-surface) 94%, white);
 }
 
 .loading-container, .empty-container, .error-container {
@@ -34,21 +59,35 @@
 }
 
 .status-open {
-  background-color: #ffcdd2;
-  color: #c62828;
+  /* Red */
+  background-color: #fde4e4;
+  color: #b71c1c;
+  border-color: #f5b5b5;
 }
 
 .status-in-progress {
-  background-color: #fff9c4;
-  color: #f9a825;
+  /* Yellow */
+  background-color: #fff4ce;
+  color: #8d6b00;
+  border-color: #ffe08a;
 }
 
 .status-completed {
-  background-color: #c8e6c9;
-  color: #2e7d32;
+  /* Green */
+  background-color: #e2f4e8;
+  color: #1b5e20;
+  border-color: #bfe7cf;
 }
 
 mat-chip {
   font-size: 12px;
   padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+/* Paginator spacing */
+mat-paginator {
+  padding: 8px 12px;
+  border-top: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 50%, transparent);
 }

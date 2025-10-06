@@ -37,3 +37,42 @@ body {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Global polish: consistent hover, focus and transitions using Material tokens */
+[mat-raised-button] {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.02s ease;
+}
+
+[mat-raised-button]:hover:not([disabled]) {
+  filter: brightness(1.03);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
+}
+
+[mat-raised-button]:active:not([disabled]) {
+  transform: translateY(1px);
+}
+
+[mat-raised-button].mat-primary {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+
+[mat-raised-button].mat-warn {
+  background-color: var(--mat-sys-error);
+  color: var(--mat-sys-on-error);
+}
+
+[mat-icon-button] {
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border-radius: 999px;
+}
+
+[mat-icon-button]:hover {
+  background-color: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+}
+
+/* Focus ring for accessibility */
+*:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--mat-sys-primary) 60%, transparent);
+  outline-offset: 2px;
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -16,6 +16,10 @@ import { TodoDTO, PagedResponse, StatusTarefa } from '../../models/todo.interfac
 import { TodoService } from '../../services/todo.service';
 import { TodoDialogComponent } from '../todo-dialog/todo-dialog.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSortModule } from '@angular/material/sort';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-todo-list',
@@ -24,6 +28,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
   styleUrls: ['./todo-list.component.scss'],
   imports: [
     CommonModule,
+    NgIf,
     MatTableModule,
     MatPaginatorModule,
     MatIconModule,
@@ -99,17 +104,13 @@ export class TodoListComponent implements OnInit, AfterViewInit {
         this.sortTodos();
         this.pageIndex = response.page ?? page;
         this.pageSize = response.size ?? size;
-        // If backend provides totalElements, use it. Otherwise estimate conservatively.
         if (response.totalElements != null) {
           this.totalElements = response.totalElements;
         } else {
-          // Estimate: pages before this page plus current page items
           const received = response.content?.length ?? 0;
           if (received < (response.size ?? size)) {
-            // last page likely
             this.totalElements = page * (response.size ?? size) + received;
           } else {
-            // unknown total, assume there may be at least one more page
             this.totalElements = (page + 1) * (response.size ?? size) + 1;
           }
         }
@@ -169,7 +170,6 @@ export class TodoListComponent implements OnInit, AfterViewInit {
         this.todoService.deleteTodo(id).subscribe({
           next: () => {
             this.dataSource.data = this.dataSource.data.filter(todo => todo.id !== id);
-            // adjust totalElements if we can
             if (this.totalElements > 0) this.totalElements = Math.max(0, this.totalElements - 1);
             this.snackBar.open('Tarefa excluída com sucesso!', 'Fechar', {
               duration: 3000
@@ -232,13 +232,6 @@ export class TodoListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  applyFilter(value: string): void {
-    this.dataSource.filter = value ? value.trim().toLowerCase() : '';
-    if (this.paginator) {
-      try { this.paginator.firstPage(); } catch { /* ignore if not available yet */ }
-    }
-  }
-
   toggleStatus(todo: TodoDTO): void {
     const newStatus: StatusTarefa = todo.status === 'CONCLUIDA' ? 'ABERTA' : 'CONCLUIDA';
     const updatedTodo = { ...todo, status: newStatus };
@@ -264,10 +257,10 @@ export class TodoListComponent implements OnInit, AfterViewInit {
     this.dataSource.data = [...this.dataSource.data].sort((a, b) => {
       const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
       const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      if (ta !== tb) return tb - ta; // newest first
+      if (ta !== tb) return tb - ta;
       const pa = a.priority ?? 1;
       const pb = b.priority ?? 1;
-      return pa - pb; // lower number = higher priority
+      return pa - pb;
     });
   }
 
@@ -276,5 +269,53 @@ export class TodoListComponent implements OnInit, AfterViewInit {
     const created = new Date(todo.createdAt).getTime();
     const now = Date.now();
     return (now - created) <= minutes * 60 * 1000;
+  }
+
+  applyFilter(value: string): void {
+    this.dataSource.filter = (value || '').trim().toLowerCase();
+  }
+
+  startTodo(todo: TodoDTO): void {
+    if (todo.status !== 'ABERTA') { return; }
+    const optimistic: TodoDTO = { ...todo, status: 'EM_ANDAMENTO' };
+    const index = this.dataSource.data.findIndex(t => t.id === todo.id);
+    if (index !== -1) {
+      this.dataSource.data[index] = optimistic;
+      this.dataSource.data = [...this.dataSource.data];
+    }
+    this.todoService.patchTodo(todo.id!, { status: 'EM_ANDAMENTO' }).subscribe({
+      next: () => {
+        this.snackBar.open('Tarefa iniciada', 'Fechar', { duration: 2500 });
+      },
+      error: () => {
+        if (index !== -1) {
+          this.dataSource.data[index] = todo;
+          this.dataSource.data = [...this.dataSource.data];
+        }
+        this.snackBar.open('Erro ao iniciar tarefa', 'Fechar', { duration: 3000 });
+      }
+    });
+  }
+
+  completeTodo(todo: TodoDTO): void {
+    if (todo.status !== 'EM_ANDAMENTO') { return; }
+    const optimistic: TodoDTO = { ...todo, status: 'CONCLUIDA' };
+    const index = this.dataSource.data.findIndex(t => t.id === todo.id);
+    if (index !== -1) {
+      this.dataSource.data[index] = optimistic;
+      this.dataSource.data = [...this.dataSource.data];
+    }
+    this.todoService.patchTodo(todo.id!, { status: 'CONCLUIDA' }).subscribe({
+      next: () => {
+        this.snackBar.open('Tarefa concluída', 'Fechar', { duration: 2500 });
+      },
+      error: () => {
+        if (index !== -1) {
+          this.dataSource.data[index] = todo;
+          this.dataSource.data = [...this.dataSource.data];
+        }
+        this.snackBar.open('Erro ao concluir tarefa', 'Fechar', { duration: 3000 });
+      }
+    });
   }
 }

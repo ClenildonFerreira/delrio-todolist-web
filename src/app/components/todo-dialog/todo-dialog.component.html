@@ -17,7 +17,7 @@
       <textarea matInput formControlName="description" rows="3"></textarea>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
+    <mat-form-field *ngIf="isEditMode" appearance="fill" class="full-width">
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
         <mat-option value="ABERTA">Aberta</mat-option>

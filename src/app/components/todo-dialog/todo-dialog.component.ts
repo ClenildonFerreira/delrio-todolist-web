@@ -68,8 +68,11 @@ export class TodoDialogComponent implements OnInit {
 
   onSave(): void {
     if (this.todoForm.valid) {
+      const formValue = this.todoForm.value;
       const result: Partial<TodoDTO> = {
-        ...this.todoForm.value,
+        ...formValue,
+        // Force ABERTA when creating
+        status: this.isEditMode ? formValue.status : 'ABERTA',
         id: this.data?.todo?.id
       };
       this.dialogRef.close(result);

@@ -1,6 +1,6 @@
 <div class="todo-container">
   <div class="header">
-    <h2>Lista de Tarefas</h2>
+    <h2>DelRio Todo List</h2>
     <button mat-raised-button color="primary" (click)="openCreateDialog()">Nova Tarefa</button>
   </div>
 
@@ -37,7 +37,8 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status</th>
         <td mat-cell *matCellDef="let todo">
-          <mat-chip [class]="getStatusClass(todo.status || 'ABERTA')">
+          <mat-chip [class]="getStatusClass(todo.status || 'ABERTA')"
+            [ngClass]="getStatusClass(todo.status || 'ABERTA')">
             {{ todo.status || 'ABERTA' }}
           </mat-chip>
         </td>
@@ -46,7 +47,10 @@
       <ng-container matColumnDef="priority">
         <th mat-header-cell *matHeaderCellDef>Prioridade</th>
         <td mat-cell *matCellDef="let todo">
-          <mat-chip [class.high-priority]="todo.priority === 1">{{ getPriorityLabel(todo.priority) }}</mat-chip>
+          <mat-chip
+            [ngClass]="{'high-priority': todo.priority === 1, 'medium-priority': todo.priority === 2, 'low-priority': todo.priority === 3}">
+            {{ getPriorityLabel(todo.priority) }}
+          </mat-chip>
         </td>
       </ng-container>
 
@@ -60,13 +64,19 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Ações</th>
         <td mat-cell *matCellDef="let todo">
-          <button mat-icon-button (click)="toggleStatus(todo)" [matTooltip]="
-              todo.status === 'CONCLUIDA' ? 'Marcar como pendente' : 'Marcar como concluída'
-            "
-            [attr.aria-label]="todo.status === 'CONCLUIDA' ? 'Marcar tarefa como pendente' : 'Marcar tarefa como concluída'">
-            <mat-icon>{{
-              todo.status === 'CONCLUIDA' ? 'radio_button_unchecked' : 'check_circle'
-              }}</mat-icon>
+          <button *ngIf="todo.status === 'ABERTA'"
+                  mat-icon-button
+                  (click)="startTodo(todo)"
+                  matTooltip="Iniciar tarefa"
+                  aria-label="Iniciar tarefa">
+            <mat-icon>play_arrow</mat-icon>
+          </button>
+          <button *ngIf="todo.status === 'EM_ANDAMENTO'"
+                  mat-icon-button
+                  (click)="completeTodo(todo)"
+                  matTooltip="Concluir tarefa"
+                  aria-label="Concluir tarefa">
+            <mat-icon>check_circle</mat-icon>
           </button>
           <button mat-icon-button (click)="editTodo(todo)" matTooltip="Editar" aria-label="Editar tarefa">
             <mat-icon>edit</mat-icon>

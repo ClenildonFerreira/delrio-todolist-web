@@ -9,6 +9,7 @@ import { App } from './app';
 import { TodoFormComponent } from './components/todo-form/todo-form.component';
 import { TodoListComponent } from './components/todo-list/todo-list.component';
 import { TodoDialogComponent } from './components/todo-dialog/todo-dialog.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { MaterialModule } from './material.module';
 
 @NgModule({
@@ -23,7 +24,8 @@ import { MaterialModule } from './material.module';
     MaterialModule,
     TodoFormComponent,
     TodoListComponent,
-    TodoDialogComponent
+    TodoDialogComponent,
+    ConfirmDialogComponent
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

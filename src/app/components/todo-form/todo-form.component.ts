@@ -32,7 +32,7 @@ export class TodoFormComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
       status: ['ABERTA' as StatusTarefa],
-      priority: [1]
+      priority: [3]
     });
   }
 

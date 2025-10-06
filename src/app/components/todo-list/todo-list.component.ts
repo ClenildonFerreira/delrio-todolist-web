@@ -224,7 +224,7 @@ export class TodoListComponent implements OnInit, AfterViewInit {
       case 3:
         return 'Baixa';
       default:
-        return 'Alta';
+        return 'Baixa';
     }
   }
 

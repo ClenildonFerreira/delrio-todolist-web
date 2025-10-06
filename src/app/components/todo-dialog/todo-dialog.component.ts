@@ -50,7 +50,7 @@ export class TodoDialogComponent implements OnInit {
       title: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
       status: ['ABERTA'],
-      priority: [1]
+      priority: [3]
     });
   }
 
@@ -61,7 +61,7 @@ export class TodoDialogComponent implements OnInit {
         title: td.title,
         description: td.description || '',
         status: td.status || 'ABERTA',
-        priority: td.priority || 1
+        priority: td.priority || 3
       });
     }
   }

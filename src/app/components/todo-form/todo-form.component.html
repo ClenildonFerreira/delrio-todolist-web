@@ -31,9 +31,9 @@
       <div class="form-group">
         <label for="priority">Prioridade</label>
         <select id="priority" formControlName="priority" aria-label="Prioridade">
-          <option [ngValue]="1">Alta</option>
-          <option [ngValue]="2">Média</option>
           <option [ngValue]="3">Baixa</option>
+          <option [ngValue]="2">Média</option>
+          <option [ngValue]="1">Alta</option>
         </select>
       </div>
 
@@ -41,7 +41,7 @@
         <label for="status">Status</label>
         <select id="status" formControlName="status" aria-label="Status">
           <option value="ABERTA">Aberta</option>
-          <option value="EM_ANDAMENTO">Em andamento</option>
+          <option value="EM_ANDAMENTO">Em Andamento</option>
           <option value="CONCLUIDA">Concluída</option>
         </select>
       </div>

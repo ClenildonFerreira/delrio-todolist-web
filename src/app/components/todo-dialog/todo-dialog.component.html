@@ -28,7 +28,11 @@
     
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Prioridade</mat-label>
-      <input matInput type="number" formControlName="priority" min="1" max="5">
+      <mat-select formControlName="priority">
+        <mat-option [value]="1">Alta</mat-option>
+        <mat-option [value]="2">Média</mat-option>
+        <mat-option [value]="3">Baixa</mat-option>
+      </mat-select>
       <mat-error *ngIf="todoForm.get('priority')?.invalid && todoForm.get('priority')?.touched">
         Prioridade inválida
       </mat-error>

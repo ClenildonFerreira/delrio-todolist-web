@@ -172,11 +172,23 @@ export class TodoListComponent implements OnInit, AfterViewInit {
     }
   }
 
+  getPriorityLabel(priority?: number): string {
+    switch (priority) {
+      case 1:
+        return 'Alta';
+      case 2:
+        return 'Média';
+      case 3:
+        return 'Baixa';
+      default:
+        return 'Alta';
+    }
+  }
+
   toggleStatus(todo: TodoDTO): void {
     const newStatus: StatusTarefa = todo.status === 'CONCLUIDA' ? 'ABERTA' : 'CONCLUIDA';
     const updatedTodo = { ...todo, status: newStatus };
 
-    // Otimistic update
     const index = this.dataSource.data.findIndex(t => t.id === todo.id);
     if (index !== -1) {
       this.dataSource.data[index] = updatedTodo;
@@ -185,7 +197,6 @@ export class TodoListComponent implements OnInit, AfterViewInit {
 
     this.todoService.patchTodo(todo.id!, { status: newStatus }).subscribe({
       error: () => {
-        // Reverter otimistic update em caso de erro
         this.dataSource.data[index] = todo;
         this.dataSource.data = [...this.dataSource.data];
         this.snackBar.open('Erro ao atualizar status', 'Fechar', {

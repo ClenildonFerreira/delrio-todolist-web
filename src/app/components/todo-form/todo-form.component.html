@@ -18,12 +18,10 @@
         [attr.aria-invalid]="todoForm.get('title')?.invalid && todoForm.get('title')?.touched"
         [attr.aria-describedby]="todoForm.get('title')?.invalid && todoForm.get('title')?.touched ? 'title-error' : null"
       />
-      @if (todoForm.get('title')?.invalid && todoForm.get('title')?.touched) {
-        <div class="error" id="title-error" role="alert">
-          @if (todoForm.get('title')?.errors?.['required']) { Título é obrigatório }
-          @if (todoForm.get('title')?.errors?.['minlength']) { Informe ao menos 3 caracteres }
-        </div>
-      }
+      <div *ngIf="todoForm.get('title')?.invalid && todoForm.get('title')?.touched" class="error" id="title-error" role="alert">
+        <div *ngIf="todoForm.get('title')?.errors?.['required']">Título é obrigatório</div>
+        <div *ngIf="todoForm.get('title')?.errors?.['minlength']">Informe ao menos 3 caracteres</div>
+      </div>
       <div class="hint" aria-hidden="true">
         {{ (todoForm.get('title')?.value?.length || 0) }} / 120
       </div>
@@ -48,9 +46,9 @@
       <div class="form-group">
         <label for="priority">Prioridade</label>
         <select id="priority" formControlName="priority" aria-label="Prioridade">
-          <option [value]="1">Alta</option>
-          <option [value]="2">Média</option>
-          <option [value]="3">Baixa</option>
+          <option [ngValue]="1">Alta</option>
+          <option [ngValue]="2">Média</option>
+          <option [ngValue]="3">Baixa</option>
         </select>
       </div>
 

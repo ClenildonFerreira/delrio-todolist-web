@@ -89,3 +89,23 @@ mat-paginator {
   padding: 8px 12px;
   border-top: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 50%, transparent);
 }
+
+.title-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.new-chip {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  border-color: rgba(13, 71, 161, 0.12);
+  font-weight: 600;
+}
+
+.high-priority {
+  background-color: #ffebee;
+  color: #b71c1c;
+  border-color: rgba(183, 28, 28, 0.12);
+  font-weight: 600;
+}

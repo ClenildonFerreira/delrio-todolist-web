@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -36,6 +36,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
   ]
 })
 export class TodoListComponent implements OnInit, AfterViewInit {
+  private refreshIntervalId: any;
   displayedColumns: string[] = ['title', 'description', 'status', 'priority', 'createdAt', 'actions'];
   dataSource = new MatTableDataSource<TodoDTO>();
   isLoading = false;
@@ -68,6 +69,16 @@ export class TodoListComponent implements OnInit, AfterViewInit {
     };
 
     this.loadTodos();
+
+    this.refreshIntervalId = setInterval(() => {
+      this.dataSource.data = [...this.dataSource.data];
+    }, 5000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshIntervalId) {
+      clearInterval(this.refreshIntervalId);
+    }
   }
 
   ngAfterViewInit() {
@@ -85,6 +96,7 @@ export class TodoListComponent implements OnInit, AfterViewInit {
     this.todoService.listTodos(page, size).subscribe({
       next: (response: PagedResponse<TodoDTO>) => {
         this.dataSource.data = response.content;
+        this.sortTodos();
         this.pageIndex = response.page ?? page;
         this.pageSize = response.size ?? size;
         this.totalElements = response.totalElements ?? this.totalElements;
@@ -114,6 +126,7 @@ export class TodoListComponent implements OnInit, AfterViewInit {
             if (index !== -1) {
               this.dataSource.data[index] = updatedTodo;
               this.dataSource.data = [...this.dataSource.data];
+              this.sortTodos();
             }
             this.snackBar.open('Tarefa atualizada com sucesso!', 'Fechar', {
               duration: 3000
@@ -167,6 +180,7 @@ export class TodoListComponent implements OnInit, AfterViewInit {
         this.todoService.createTodo(result).subscribe({
           next: (newTodo) => {
             this.dataSource.data = [...this.dataSource.data, newTodo];
+            this.sortTodos();
             this.snackBar.open('Tarefa criada com sucesso!', 'Fechar', {
               duration: 3000
             });
@@ -229,5 +243,23 @@ export class TodoListComponent implements OnInit, AfterViewInit {
         });
       }
     });
+  }
+
+  private sortTodos(): void {
+    this.dataSource.data = [...this.dataSource.data].sort((a, b) => {
+      const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      if (ta !== tb) return tb - ta; // newest first
+      const pa = a.priority ?? 1;
+      const pb = b.priority ?? 1;
+      return pa - pb; // lower number = higher priority
+    });
+  }
+
+  isRecent(todo: TodoDTO, minutes = 0.5): boolean {
+    if (!todo.createdAt) return false;
+    const created = new Date(todo.createdAt).getTime();
+    const now = Date.now();
+    return (now - created) <= minutes * 60 * 1000;
   }
 }

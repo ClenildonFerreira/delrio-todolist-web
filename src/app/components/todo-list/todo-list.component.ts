@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -99,7 +99,20 @@ export class TodoListComponent implements OnInit, AfterViewInit {
         this.sortTodos();
         this.pageIndex = response.page ?? page;
         this.pageSize = response.size ?? size;
-        this.totalElements = response.totalElements ?? this.totalElements;
+        // If backend provides totalElements, use it. Otherwise estimate conservatively.
+        if (response.totalElements != null) {
+          this.totalElements = response.totalElements;
+        } else {
+          // Estimate: pages before this page plus current page items
+          const received = response.content?.length ?? 0;
+          if (received < (response.size ?? size)) {
+            // last page likely
+            this.totalElements = page * (response.size ?? size) + received;
+          } else {
+            // unknown total, assume there may be at least one more page
+            this.totalElements = (page + 1) * (response.size ?? size) + 1;
+          }
+        }
         this.isLoading = false;
       },
       error: (error) => {
@@ -156,6 +169,8 @@ export class TodoListComponent implements OnInit, AfterViewInit {
         this.todoService.deleteTodo(id).subscribe({
           next: () => {
             this.dataSource.data = this.dataSource.data.filter(todo => todo.id !== id);
+            // adjust totalElements if we can
+            if (this.totalElements > 0) this.totalElements = Math.max(0, this.totalElements - 1);
             this.snackBar.open('Tarefa excluída com sucesso!', 'Fechar', {
               duration: 3000
             });

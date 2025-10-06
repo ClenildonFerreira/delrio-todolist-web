@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,9 +14,11 @@ export interface TodoDialogData {
 
 @Component({
   selector: 'app-todo-dialog',
+  standalone: true,
   templateUrl: './todo-dialog.component.html',
   styleUrls: ['./todo-dialog.component.scss'],
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatFormFieldModule,
@@ -31,9 +34,11 @@ export class TodoDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<TodoDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TodoDialogData
+    @Inject(MAT_DIALOG_DATA) public data: TodoDialogData | null
   ) {
-    this.isEditMode = !!data.todo;
+    // default to empty object if no data provided
+    this.data = this.data ?? {} as TodoDialogData;
+    this.isEditMode = !!this.data.todo;
     this.todoForm = this.createForm();
   }
 
@@ -51,12 +56,13 @@ export class TodoDialogComponent implements OnInit {
   }
 
   private populateForm(): void {
-    if (this.data.todo) {
+    if (this.data && this.data.todo) {
+      const td = this.data.todo;
       this.todoForm.patchValue({
-        title: this.data.todo.title,
-        description: this.data.todo.description || '',
-        status: this.data.todo.status || 'ABERTA',
-        priority: this.data.todo.priority || 1
+        title: td.title,
+        description: td.description || '',
+        status: td.status || 'ABERTA',
+        priority: td.priority || 1
       });
     }
   }
@@ -65,7 +71,7 @@ export class TodoDialogComponent implements OnInit {
     if (this.todoForm.valid) {
       const result: Partial<TodoDTO> = {
         ...this.todoForm.value,
-        id: this.data.todo?.id
+        id: this.data?.todo?.id
       };
       this.dialogRef.close(result);
     }

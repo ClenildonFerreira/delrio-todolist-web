@@ -6,8 +6,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
-import { TodoListComponent } from './components/todo-list/todo-list.component';
 import { TodoFormComponent } from './components/todo-form/todo-form.component';
+import { TodoListComponent } from './components/todo-list/todo-list.component';
+import { TodoDialogComponent } from './components/todo-dialog/todo-dialog.component';
 import { MaterialModule } from './material.module';
 
 @NgModule({
@@ -20,8 +21,9 @@ import { MaterialModule } from './material.module';
     ReactiveFormsModule,
     AppRoutingModule,
     MaterialModule,
+    TodoFormComponent,
     TodoListComponent,
-    TodoFormComponent
+    TodoDialogComponent
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

@@ -1,16 +1,35 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { CommonModule } from '@angular/common';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
 import { TodoDTO, PagedResponse, StatusTarefa } from '../../models/todo.interface';
 import { TodoService } from '../../services/todo.service';
 import { TodoDialogComponent } from '../todo-dialog/todo-dialog.component';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-todo-list',
+  standalone: true,
   templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.scss']
+  styleUrls: ['./todo-list.component.scss'],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatChipsModule
+  ]
 })
 export class TodoListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['title', 'description', 'status', 'priority', 'createdAt', 'actions'];
@@ -68,7 +87,6 @@ export class TodoListComponent implements OnInit, AfterViewInit {
       if (result) {
         this.todoService.patchTodo(result.id!, result).subscribe({
           next: (updatedTodo) => {
-
             const index = this.dataSource.data.findIndex(t => t.id === updatedTodo.id);
             if (index !== -1) {
               this.dataSource.data[index] = updatedTodo;
@@ -89,8 +107,8 @@ export class TodoListComponent implements OnInit, AfterViewInit {
   }
 
   deleteTodo(id: number): void {
-    const dialogRef = this.dialog.open(TodoDialogComponent, {
-      width: '300px',
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '320px',
       data: {
         title: 'Confirmar exclusão',
         message: 'Tem certeza que deseja excluir esta tarefa?'
@@ -126,7 +144,6 @@ export class TodoListComponent implements OnInit, AfterViewInit {
       if (result) {
         this.todoService.createTodo(result).subscribe({
           next: (newTodo) => {
-            // Otimistic update
             this.dataSource.data = [...this.dataSource.data, newTodo];
             this.snackBar.open('Tarefa criada com sucesso!', 'Fechar', {
               duration: 3000
@@ -164,7 +181,7 @@ export class TodoListComponent implements OnInit, AfterViewInit {
 
     this.todoService.patchTodo(todo.id!, { status: newStatus }).subscribe({
       error: () => {
-
+        // Reverter otimistic update em caso de erro
         this.dataSource.data[index] = todo;
         this.dataSource.data = [...this.dataSource.data];
         this.snackBar.open('Erro ao atualizar status', 'Fechar', {

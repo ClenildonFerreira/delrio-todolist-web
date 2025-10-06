@@ -5,7 +5,7 @@ import { PagedResponse, TodoDTO } from '../models/todo.interface';
 
 @Injectable({ providedIn: 'root' })
 export class TodoService {
-  private base = '/todos';
+  private base = 'http://localhost:8080/todos';
 
   constructor(private http: HttpClient) { }
 
@@ -15,7 +15,12 @@ export class TodoService {
   }
 
   createTodo(todo: Partial<TodoDTO>) {
-    return this.http.post<TodoDTO>(this.base, todo);
+    const payload: Partial<TodoDTO> = {
+      ...todo,
+      createdAt: todo.createdAt ?? new Date().toISOString()
+    };
+
+    return this.http.post<TodoDTO>(this.base, payload);
   }
 
   patchTodo(id: number, body: Partial<TodoDTO>) {

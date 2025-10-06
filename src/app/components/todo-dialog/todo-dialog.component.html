@@ -11,12 +11,12 @@
         Título deve ter no mínimo 3 caracteres
       </mat-error>
     </mat-form-field>
-    
+
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Descrição</mat-label>
       <textarea matInput formControlName="description" rows="3"></textarea>
     </mat-form-field>
-    
+
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
@@ -25,7 +25,7 @@
         <mat-option value="CONCLUIDA">Concluída</mat-option>
       </mat-select>
     </mat-form-field>
-    
+
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Prioridade</mat-label>
       <mat-select formControlName="priority">
@@ -41,8 +41,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="onSave()" 
-          [disabled]="todoForm.invalid">
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="todoForm.invalid">
     Salvar
   </button>
 </mat-dialog-actions>

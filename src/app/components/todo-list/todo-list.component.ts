@@ -6,6 +6,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -28,6 +30,8 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
     MatProgressSpinnerModule,
     MatButtonModule,
     MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatChipsModule
   ]
 })
@@ -49,6 +53,20 @@ export class TodoListComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
+    this.dataSource.filterPredicate = (data: TodoDTO, filter: string) => {
+      const f = filter.trim().toLowerCase();
+      if (!f) return true;
+      const fields = [
+        data.title,
+        data.description,
+        data.status,
+        String(data.priority),
+        this.getPriorityLabel(data.priority),
+        data.createdAt
+      ];
+      return fields.some(field => (field || '').toString().toLowerCase().includes(f));
+    };
+
     this.loadTodos();
   }
 
@@ -182,6 +200,13 @@ export class TodoListComponent implements OnInit, AfterViewInit {
         return 'Baixa';
       default:
         return 'Alta';
+    }
+  }
+
+  applyFilter(value: string): void {
+    this.dataSource.filter = value ? value.trim().toLowerCase() : '';
+    if (this.paginator) {
+      try { this.paginator.firstPage(); } catch { /* ignore if not available yet */ }
     }
   }
 

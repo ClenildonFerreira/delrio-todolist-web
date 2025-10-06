@@ -1,24 +1,15 @@
 <div class="form-container">
   <h2>{{ isEditMode ? 'Editar Tarefa' : 'Nova Tarefa' }}</h2>
-  
+
   <form [formGroup]="todoForm" (ngSubmit)="onSubmit()" novalidate>
     <div class="form-group">
       <label for="title">Título <span aria-hidden="true">*</span></label>
-      <input 
-        type="text" 
-        id="title" 
-        formControlName="title" 
-        placeholder="Digite o título da tarefa"
-        required
-        minlength="3"
-        maxlength="120"
-        autocomplete="off"
-        spellcheck="true"
-        autofocus
+      <input type="text" id="title" formControlName="title" placeholder="Digite o título da tarefa" required
+        minlength="3" maxlength="120" autocomplete="off" spellcheck="true" autofocus
         [attr.aria-invalid]="todoForm.get('title')?.invalid && todoForm.get('title')?.touched"
-        [attr.aria-describedby]="todoForm.get('title')?.invalid && todoForm.get('title')?.touched ? 'title-error' : null"
-      />
-      <div *ngIf="todoForm.get('title')?.invalid && todoForm.get('title')?.touched" class="error" id="title-error" role="alert">
+        [attr.aria-describedby]="todoForm.get('title')?.invalid && todoForm.get('title')?.touched ? 'title-error' : null" />
+      <div *ngIf="todoForm.get('title')?.invalid && todoForm.get('title')?.touched" class="error" id="title-error"
+        role="alert">
         <div *ngIf="todoForm.get('title')?.errors?.['required']">Título é obrigatório</div>
         <div *ngIf="todoForm.get('title')?.errors?.['minlength']">Informe ao menos 3 caracteres</div>
       </div>
@@ -29,14 +20,8 @@
 
     <div class="form-group">
       <label for="description">Descrição</label>
-      <textarea 
-        id="description" 
-        formControlName="description" 
-        placeholder="Digite a descrição da tarefa"
-        rows="3"
-        maxlength="500"
-        [attr.aria-describedby]="'description-hint'"
-      ></textarea>
+      <textarea id="description" formControlName="description" placeholder="Digite a descrição da tarefa" rows="3"
+        maxlength="500" [attr.aria-describedby]="'description-hint'"></textarea>
       <div class="hint" id="description-hint" aria-hidden="true">
         Opcional. Máx. 500 caracteres.
       </div>
@@ -63,7 +48,8 @@
     </div>
 
     <div class="form-actions">
-      <button type="submit" [disabled]="todoForm.invalid" class="btn-primary" aria-label="{{ isEditMode ? 'Atualizar' : 'Criar' }} tarefa">
+      <button type="submit" [disabled]="todoForm.invalid" class="btn-primary"
+        aria-label="{{ isEditMode ? 'Atualizar' : 'Criar' }} tarefa">
         {{ isEditMode ? 'Atualizar' : 'Criar' }}
       </button>
       <button type="button" (click)="onCancel()" class="btn-secondary" aria-label="Cancelar e voltar">

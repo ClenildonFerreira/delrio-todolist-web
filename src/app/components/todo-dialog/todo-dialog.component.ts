@@ -36,7 +36,6 @@ export class TodoDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<TodoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TodoDialogData | null
   ) {
-    // default to empty object if no data provided
     this.data = this.data ?? {} as TodoDialogData;
     this.isEditMode = !!this.data.todo;
     this.todoForm = this.createForm();

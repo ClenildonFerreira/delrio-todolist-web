@@ -14,7 +14,7 @@
 .header h2 {
   margin: 0;
   font-weight: 600;
-  letter-spacing: .2px;
+  letter-spacing: 0.2px;
 }
 
 .table-container {
@@ -33,12 +33,13 @@ tr.mat-mdc-row:hover {
   background: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
 }
 
-/* Zebra rows for readability */
 .mat-mdc-table .mdc-data-table__content tr:nth-child(odd) td {
   background: color-mix(in srgb, var(--mat-sys-surface) 94%, white);
 }
 
-.loading-container, .empty-container, .error-container {
+.loading-container,
+.empty-container,
+.error-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,7 +52,8 @@ tr.mat-mdc-row:hover {
   margin-bottom: 20px;
 }
 
-.empty-container mat-icon, .error-container mat-icon {
+.empty-container mat-icon,
+.error-container mat-icon {
   font-size: 48px;
   width: 48px;
   height: 48px;
@@ -59,21 +61,18 @@ tr.mat-mdc-row:hover {
 }
 
 .status-open {
-  /* Red */
   background-color: #fde4e4;
   color: #b71c1c;
   border-color: #f5b5b5;
 }
 
 .status-in-progress {
-  /* Yellow */
   background-color: #fff4ce;
   color: #8d6b00;
   border-color: #ffe08a;
 }
 
 .status-completed {
-  /* Green */
   background-color: #e2f4e8;
   color: #1b5e20;
   border-color: #bfe7cf;
@@ -86,7 +85,6 @@ mat-chip {
   border: 1px solid transparent;
 }
 
-/* Paginator spacing */
 mat-paginator {
   padding: 8px 12px;
   border-top: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 50%, transparent);

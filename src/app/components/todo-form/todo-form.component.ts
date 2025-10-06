@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TodoService } from '../../services/todo.service';
-import { CreateTodoDTO } from '../../models/todo.interface';
+import { TodoDTO } from '../../models/todo.interface';
 @Component({
   selector: 'app-todo-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './todo-form.component.html',
-  styleUrls: ['./todo-form.component.scss']
+  styleUrls: ['./todo-form.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule]
 })
 
 export class TodoFormComponent implements OnInit {
@@ -38,10 +37,10 @@ export class TodoFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.todoForm.valid) {
-      const todoData: CreateTodoDTO = this.todoForm.value;
+      const todoData: Partial<TodoDTO> = this.todoForm.value;
 
       const operation = this.isEditMode && this.todoId
-        ? this.todoService.updateTodo(this.todoId, todoData)
+        ? this.todoService.patchTodo(this.todoId, todoData)
         : this.todoService.createTodo(todoData);
 
       operation.subscribe({

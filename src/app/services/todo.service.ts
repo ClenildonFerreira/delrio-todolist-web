@@ -1,33 +1,28 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TodoDTO, CreateTodoDTO } from '../models/todo.interface';
+import { PagedResponse, TodoDTO } from '../models/todo.interface';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class TodoService {
-  private readonly apiUrl = 'http://localhost:8080/todos';
+  private base = '/todos';
 
   constructor(private http: HttpClient) { }
 
-  getAllTodos(): Observable<TodoDTO[]> {
-    return this.http.get<TodoDTO[]>(this.apiUrl);
+  listTodos(page = 0, size = 10): Observable<PagedResponse<TodoDTO>> {
+    const params = new HttpParams().set('page', String(page)).set('size', String(size));
+    return this.http.get<PagedResponse<TodoDTO>>(this.base, { params });
   }
 
-  getTodoById(id: number): Observable<TodoDTO> {
-    return this.http.get<TodoDTO>(`${this.apiUrl}/${id}`);
+  createTodo(todo: Partial<TodoDTO>) {
+    return this.http.post<TodoDTO>(this.base, todo);
   }
 
-  createTodo(todo: CreateTodoDTO): Observable<TodoDTO> {
-    return this.http.post<TodoDTO>(this.apiUrl, todo);
+  patchTodo(id: number, body: Partial<TodoDTO>) {
+    return this.http.patch<TodoDTO>(`${this.base}/${id}`, body);
   }
 
-  updateTodo(id: number, todo: CreateTodoDTO): Observable<TodoDTO> {
-    return this.http.put<TodoDTO>(`${this.apiUrl}/${id}`, todo);
-  }
-
-  deleteTodo(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteTodo(id: number) {
+    return this.http.delete<void>(`${this.base}/${id}`);
   }
 }
